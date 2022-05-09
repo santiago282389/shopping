@@ -13,6 +13,7 @@ namespace shopping.Data.Entities
 
         public State State { get; set; }
 
+        public ICollection<User> users  { get; set; }
 
     }
 }
