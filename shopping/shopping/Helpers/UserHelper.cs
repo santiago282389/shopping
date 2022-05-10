@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using shopping.Data;
 using shopping.Data.Entities;
+using shopping.Models;
 
 namespace shopping.Helpers
 {
@@ -10,12 +11,14 @@ namespace shopping.Helpers
         private readonly DataContext _context;
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly SignInManager<User> _signInManager;
 
-        public UserHelper(DataContext context, UserManager<User> userManager, RoleManager<IdentityRole> roleManager )
+        public UserHelper(DataContext context, UserManager<User> userManager, RoleManager<IdentityRole> roleManager, SignInManager<User> signInManager )
         {
             _context = context;
             _userManager = userManager;
             _roleManager = roleManager;
+            _signInManager = signInManager;
         }
 
         public async Task<IdentityResult> AddUserAsync(User user, string password)
@@ -52,6 +55,16 @@ namespace shopping.Helpers
         {
             return await _userManager.IsInRoleAsync(user, roleName);
 
+        }
+
+        public async Task<SignInResult> LoginAsync(LoginViewModel model)
+        {
+            return await _signInManager.PasswordSignInAsync(model.Username, model.Password, model.RememberMe, false);
+        }
+
+        public async Task LogoutAsync()
+        {
+            await _signInManager.SignOutAsync();
         }
     }
 }
